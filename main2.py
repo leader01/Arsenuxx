@@ -115,7 +115,7 @@ def get_translation(arg: str):
 
     except:
         # in case if internet is unavailable. Using .txt file with words to translate
-        file = open('wordbase.txt', 'r')
+        file = open('wordbase.txt', encoding="utf8")
         f = file.read()
         result = ast.literal_eval(f)
         for i in result:
@@ -210,8 +210,7 @@ if __name__ == "__main__":
 
         print(voice_input)
         try:
-            vi = translator.translate(voice_input, dest="en").text
-            dpg.set_value("txt1", "You said: " + vi)
+            dpg.set_value("txt1", "You said: " + voice_input)
         except:
             pass
 
