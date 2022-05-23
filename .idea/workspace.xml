@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a05f19f-85a4-4aa1-9367-a05bdcae743c" name="Changes" comment="" />
+    <list default="true" id="9a05f19f-85a4-4aa1-9367-a05bdcae743c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/kursov.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/kursov.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -163,8 +166,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main2" />
-        <item itemvalue="Python.__init__" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.__init__" />
         <item itemvalue="Python.camera_capture_with_opencv" />
         <item itemvalue="Python.parser" />
       </list>
@@ -203,5 +206,21 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main2.py</url>
+          <line>100</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main2.py</url>
+          <line>187</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
