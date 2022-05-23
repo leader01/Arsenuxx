@@ -41,8 +41,7 @@ def play_voice_assistant_speech(text_to_speech):
     :param text_to_speech: text, which we need convert to voice
     by Arsen
     """
-    result = translator.translate(text_to_speech, dest="en")
-    dpg.set_value("txt2", "Bot said: " + result.text)
+    dpg.set_value("txt2", "Bot said: " + text_to_speech)
     ttsEngine.say(str(text_to_speech))
     ttsEngine.runAndWait()
 
@@ -100,9 +99,16 @@ def execute_command_with_name(command_name: str, *args: list):
 
 
 def get_translation(arg: str):
+    destination = None
     try:
+        if type(arg) != str:
+            arg = ''.join(arg)
+        lang = translator.detect(arg)
+        if "lang=ru" in lang:
+            destination = "en"
+        elif "lang=en" in lang:
+            destination = "ru"
         # online translation by Google
-        arg = ''.join(arg)
         result = translator.translate(arg, dest=assistant.speech_language)
         play_voice_assistant_speech("Это переводится как " + result.text)
         print(result.text)
@@ -179,6 +185,20 @@ if __name__ == "__main__":
         main_loop()
         dpg.set_value("stat", "Bot status: ...")
 
+    def callback2():
+        value = dpg.get_value("input_text")
+        value = value.encode("windows-1252")
+        value = value.decode("cp1251")
+
+        destination = None
+        lang = str(translator.detect(value))
+        if "lang=ru" in lang:
+            destination = "en"
+        elif "lang=en" in lang:
+            destination = "ru"
+        result = translator.translate(value, dest=destination)
+        dpg.set_value("txt0", "Result: " + result.text)
+
     def main_loop():
         dpg.set_item_label("btn1", "Listening...")
         # Start of voice recording with output
@@ -208,20 +228,24 @@ if __name__ == "__main__":
     dpg.create_context()
 
     dpg.create_viewport(title='Arsenux', width=600, height=200)
+
+    with dpg.font_registry():
+            with dpg.font(r"fonts\timesetx-rus.ttf", 13, default_font=True, id="Default font"):
+                dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+    dpg.bind_font("Default font")
+
     with dpg.window(tag="Primary Window"):
         dpg.add_text("Speaking recognition by Arsen")
         dpg.add_separator()
         dpg.add_button(label="Press to speak", callback=callback, tag="btn1")
+        dpg.add_input_text(label="Enter word for translation", tag="input_text", callback=callback2, on_enter=True)
+        dpg.add_text(tag="txt0")
         dpg.add_separator()
-        dpg.add_spacing()
-        dpg.add_text("/// Execution info \\\\\\")
+        dpg.add_text("/// Execution info ")
         dpg.add_text("Bot status:", tag="stat")
         dpg.add_text("You said:", tag="txt1")
         dpg.add_text("Bot said:", tag="txt2")
         dpg.add_separator()
-        dpg.add_spacing()
-        dpg.add_text("\"ONLY ENGLISH TRANSLATION IN INTERFACE,")
-        dpg.add_text(" BUT BOT CAN SPEAK/RECOGNIZE BOTH LANGUAGES (EN/RU)\" ")
 
     dpg.show_metrics()
     dpg.setup_dearpygui()
