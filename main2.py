@@ -100,6 +100,11 @@ def execute_command_with_name(command_name: str, *args: list):
 
 def get_translation(arg: str):
     destination = None
+    t_lang = ""
+    if assistant.speech_language == "ru":
+        t_lang = "Это переводится как "
+    elif assistant.speech_language == "en":
+        t_lang = "It's translates like "
     try:
         if type(arg) != str:
             arg = ''.join(arg)
@@ -110,7 +115,7 @@ def get_translation(arg: str):
             destination = "ru"
         # online translation by Google
         result = translator.translate(arg, dest=assistant.speech_language)
-        play_voice_assistant_speech("Это переводится как " + result.text)
+        play_voice_assistant_speech(t_lang + result.text)
         print(result.text)
 
     except:
@@ -120,17 +125,23 @@ def get_translation(arg: str):
         result = ast.literal_eval(f)
         for i in result:
             if i[0] == arg:
-                play_voice_assistant_speech("Это переводится как " + i[1])
+                play_voice_assistant_speech(t_lang + i[1])
             elif i[1] == arg:
-                play_voice_assistant_speech("Это переводится как " + i[0])
+                play_voice_assistant_speech(t_lang + i[0])
 
 
 def play_greetings(*args):
-    play_voice_assistant_speech("Приветствую")
+    if assistant.sex == "ru":
+        play_voice_assistant_speech("Приветствую")
+    else:
+        play_voice_assistant_speech("Greetings master")
 
 
 def play_farewell_and_quit(*args):
-    play_voice_assistant_speech("Пока")
+    if assistant.sex == "ru":
+        play_voice_assistant_speech("Пока")
+    else:
+        play_voice_assistant_speech("Bye bye")
 
 def search_for_definition_on_wikipedia(arg: str):
     try:
@@ -222,6 +233,28 @@ if __name__ == "__main__":
             execute_command_with_name(command, command_options)
         dpg.set_item_label("btn1", "Press to speak")
 
+    def reset():
+        assistant.name = "Alice"
+        assistant.sex = "female"
+        assistant.speech_language = "ru"
+        wikipedia.set_lang("ru")
+        setup_assistant_voice()
+        if assistant.speech_language == "ru":
+            play_voice_assistant_speech("Настройки ассистента были успешно сброшены")
+        elif assistant.speech_language == "en":
+            play_voice_assistant_speech("Settings of assistant was successfully reset")
+
+    def change_language_call():
+        if assistant.speech_language == "ru":
+            assistant.speech_language = "en"
+            wikipedia.set_lang("en")
+            setup_assistant_voice()
+            play_voice_assistant_speech("Language was successfully changed")
+        elif assistant.speech_language == "en":
+            assistant.speech_language = "ru"
+            wikipedia.set_lang("ru")
+            setup_assistant_voice()
+            play_voice_assistant_speech("Язык был успешно изменён")
 
     # // Basic user interface //
     dpg.create_context()
@@ -229,11 +262,29 @@ if __name__ == "__main__":
     dpg.create_viewport(title='Arsenux', width=600, height=200)
 
     with dpg.font_registry():
-            with dpg.font(r"fonts\timesetx-rus.ttf", 13, default_font=True, id="Default font"):
+            with dpg.font(r"fonts/cyrillic.ttf", 20, default_font=True, id="Default font"):
                 dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
     dpg.bind_font("Default font")
 
+    with dpg.window(label="Settings", modal=True, show=False, id="settings_id", no_title_bar=True):
+        dpg.add_separator()
+        with dpg.group():
+            dpg.add_button(label="Reset assistant parameters", callback=reset)
+            dpg.add_button(label="Change language of assistant", callback=change_language_call)
+            dpg.add_button(label="Close window", callback=lambda: dpg.configure_item("settings_id", show=False))
+
+    with dpg.window(label="Help", modal=True, show=False, id="modal_id", no_title_bar=True):
+        dpg.add_text("Arsen Daudov.\n+7 705 584 2794")
+        dpg.add_separator()
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("modal_id", show=False))
+
     with dpg.window(tag="Primary Window"):
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Settings", width=90, callback=lambda: dpg.configure_item("settings_id", show=True))
+            dpg.add_button(label="Help", width=75, callback=lambda: dpg.configure_item("modal_id", show=True))
+
+        dpg.add_separator()
         dpg.add_text("Speaking recognition by Arsen")
         dpg.add_separator()
         dpg.add_button(label="Press to speak", callback=callback, tag="btn1")

@@ -6,6 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="9a05f19f-85a4-4aa1-9367-a05bdcae743c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/Analysis-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/COLLECT-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/EXE-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/PYZ-00.pyz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/PYZ-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/base_library.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/main2.exe" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/main2.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/main2.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/main2.pkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/warn-main2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/warn-main2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/main2/xref-main2.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/main2/xref-main2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/main2/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main2/base_library.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/main2/main2.exe" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main2/main2.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main2.py" beforeDir="false" afterPath="$PROJECT_DIR$/main2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -167,9 +179,9 @@
       <list>
         <item itemvalue="Python.main2" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.parser" />
         <item itemvalue="Python.__init__" />
         <item itemvalue="Python.camera_capture_with_opencv" />
-        <item itemvalue="Python.parser" />
       </list>
     </recent_temporary>
   </component>
@@ -217,7 +229,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main2.py</url>
-          <line>187</line>
+          <line>198</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
