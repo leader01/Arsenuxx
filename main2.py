@@ -41,7 +41,7 @@ def play_voice_assistant_speech(text_to_speech):
     :param text_to_speech: text, which we need convert to voice
     by Arsen
     """
-    dpg.set_value("txt2", "Bot said: " + text_to_speech)
+    dpg.set_value("txt2", "Мой ответ: " + text_to_speech)
     ttsEngine.say(str(text_to_speech))
     ttsEngine.runAndWait()
 
@@ -58,7 +58,7 @@ def record_and_recognize_audio(*args: tuple):
 
         try:
             print("Listening...")
-            dpg.set_value("stat", "Bot status: Listening...")
+            dpg.set_value("stat", "Статус: Слушаю...")
             audio = recognizer.listen(microphone, 5, 5)
 
             with open("microphone-results.wav", "wb") as file:
@@ -66,8 +66,8 @@ def record_and_recognize_audio(*args: tuple):
 
         except speech_recognition.WaitTimeoutError:
             print("Can you check if your mic is on?")
-            dpg.set_value("stat", "Bot status: Didn't hear anything")
-            dpg.set_value("txt2", "Bot said: Can you check if your mic is on?")
+            dpg.set_value("stat", "Статус: Ошибка, звук не распознан")
+            dpg.set_value("txt2", "Мой ответ: Можете ли вы проверить включен ли ваш микрофон?")
             return
 
         # using online recognition by Google
@@ -131,7 +131,7 @@ def get_translation(arg: str):
 
 
 def play_greetings(*args):
-    if assistant.sex == "ru":
+    if assistant.speech_language == "ru":
         play_voice_assistant_speech("Приветствую")
     else:
         play_voice_assistant_speech("Greetings master")
@@ -148,7 +148,7 @@ def search_for_definition_on_wikipedia(arg: str):
         result = wikipedia.summary(arg, sentences=2)
         play_voice_assistant_speech(result)
     except:
-        dpg.set_value("stat", "Bot status: Error")
+        dpg.set_value("stat", "Статус: Ошибка[x1wiki]")
 
 
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
     def callback():
         main_loop()
-        dpg.set_value("stat", "Bot status: ...")
+        dpg.set_value("stat", "Статус: ...")
 
     def callback2():
         value = dpg.get_value("input_text")
@@ -208,10 +208,10 @@ if __name__ == "__main__":
         elif "lang=en" in lang:
             destination = "ru"
         result = translator.translate(value, dest=destination)
-        dpg.set_value("txt0", "Result: " + result.text)
+        dpg.set_value("txt0", "Результат: " + result.text)
 
     def main_loop():
-        dpg.set_item_label("btn1", "Listening...")
+        dpg.set_item_label("btn1", "Обработка...")
         # Start of voice recording with output
         voice_input = record_and_recognize_audio()
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
         print(voice_input)
         try:
-            dpg.set_value("txt1", "You said: " + voice_input)
+            dpg.set_value("txt1", "Вы сказали:" + voice_input)
         except:
             pass
 
@@ -231,7 +231,7 @@ if __name__ == "__main__":
             command = voice_input[0]
             command_options = [str(input_part) for input_part in voice_input[1:len(voice_input)]]
             execute_command_with_name(command, command_options)
-        dpg.set_item_label("btn1", "Press to speak")
+        dpg.set_item_label("btn1", "Нажмите чтоб говорить")
 
     def reset():
         assistant.name = "Alice"
@@ -269,32 +269,32 @@ if __name__ == "__main__":
     with dpg.window(label="Settings", modal=True, show=False, id="settings_id", no_title_bar=True):
         dpg.add_separator()
         with dpg.group():
-            dpg.add_button(label="Reset assistant parameters", callback=reset)
-            dpg.add_button(label="Change language of assistant", callback=change_language_call)
-            dpg.add_button(label="Close window", callback=lambda: dpg.configure_item("settings_id", show=False))
+            dpg.add_button(label="Сбросить настройки ассистента", callback=reset)
+            dpg.add_button(label="Изменить язык ассистента", callback=change_language_call)
+            dpg.add_button(label="Закрыть окно", callback=lambda: dpg.configure_item("settings_id", show=False))
 
     with dpg.window(label="Help", modal=True, show=False, id="modal_id", no_title_bar=True):
-        dpg.add_text("Arsen Daudov.\n+7 705 584 2794")
+        dpg.add_text("Арсен Даудов.\n+7 705 584 2794")
         dpg.add_separator()
         with dpg.group(horizontal=True):
             dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("modal_id", show=False))
 
     with dpg.window(tag="Primary Window"):
         with dpg.group(horizontal=True):
-            dpg.add_button(label="Settings", width=90, callback=lambda: dpg.configure_item("settings_id", show=True))
-            dpg.add_button(label="Help", width=75, callback=lambda: dpg.configure_item("modal_id", show=True))
+            dpg.add_button(label="Настройки", callback=lambda: dpg.configure_item("settings_id", show=True))
+            dpg.add_button(label="Помощь", callback=lambda: dpg.configure_item("modal_id", show=True))
 
         dpg.add_separator()
-        dpg.add_text("Speaking recognition by Arsen")
+        dpg.add_text("Голосовое распознование")
         dpg.add_separator()
-        dpg.add_button(label="Press to speak", callback=callback, tag="btn1")
-        dpg.add_input_text(label="Enter word for translation", tag="input_text", callback=callback2, on_enter=True)
+        dpg.add_button(label="Нажмите чтоб говорить", callback=callback, tag="btn1")
+        dpg.add_input_text(label="Введите слово или предложение для перевода", tag="input_text", callback=callback2, on_enter=True)
         dpg.add_text(tag="txt0")
         dpg.add_separator()
-        dpg.add_text("/// Execution info ")
-        dpg.add_text("Bot status:", tag="stat")
-        dpg.add_text("You said:", tag="txt1")
-        dpg.add_text("Bot said:", tag="txt2")
+        dpg.add_text("/// Информация отладки ")
+        dpg.add_text("Статус:", tag="stat")
+        dpg.add_text("Вы сказали:", tag="txt1")
+        dpg.add_text("Мой ответ:", tag="txt2")
         dpg.add_separator()
 
     dpg.show_metrics()

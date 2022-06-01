@@ -1,16 +1,11 @@
 import dearpygui.dearpygui as dpg
+import dearpygui.demo as demo
 
 dpg.create_context()
-with dpg.window(label="Delete Files", modal=True, show=False, id="sex", no_title_bar=True):
-    dpg.add_text("Arsen Daudov.\n+7 705 584 2794")
-    dpg.add_separator()
-    with dpg.group(horizontal=True):
-        dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("sex", show=False))
+dpg.create_viewport(title='Custom Title', width=600, height=600)
 
-with dpg.window(label="Tutorial"):
-    dpg.add_button(label="Open Dialog", callback=lambda: dpg.configure_item("sex", show=True))
+demo.show_demo()
 
-dpg.create_viewport(title='Custom Title', width=800, height=600)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
