@@ -194,9 +194,10 @@ if __name__ == "__main__":
 
 
     def callback():
-        dpg.set_item_pos("ind1", (0,0))
+        dpg.set_item_pos("ind1", [0, 0])
         main_loop()
         dpg.set_value("stat", "...")
+        dpg.set_item_pos("ind1", [-244, -244])
 
 
     def callback2():
@@ -222,10 +223,6 @@ if __name__ == "__main__":
         print(wiki_result)
 
         dpg.set_value("txt0", "Результат перевода: " + result.text + "\n \n Возможное определение: " + wiki_result)
-
-
-
-
 
     def main_loop():
         dpg.set_item_label("btn1", "Обработка...")
@@ -291,6 +288,7 @@ if __name__ == "__main__":
     with dpg.window(label="Settings", modal=True, show=False, id="settings_id", no_title_bar=True):
         dpg.add_separator()
         with dpg.group():
+            dpg.add_button(label="Настройки интерфейса", callback=dpg.show_style_editor)
             dpg.add_button(label="Сбросить настройки ассистента", callback=reset)
             dpg.add_button(label="Изменить язык ассистента", callback=change_language_call)
             dpg.add_button(label="Закрыть окно", callback=lambda: dpg.configure_item("settings_id", show=False))
@@ -298,10 +296,17 @@ if __name__ == "__main__":
     with dpg.window(label="Help", modal=True, show=False, id="modal_id", no_title_bar=True):
         dpg.add_text("Арсен Даудов.\n+7 705 584 2794")
         dpg.add_separator()
+        dpg.add_button(label="Включить метрики", callback=dpg.show_metrics)
         with dpg.group(horizontal=True):
             dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("modal_id", show=False))
 
+    width, height, channels, data = dpg.load_image("testing.jpg")
+    with dpg.texture_registry(show=True):
+        dpg.add_static_texture(width=width, height=height, default_value=data, tag="texture_tag")
+
+
     with dpg.window(tag="Primary Window"):
+        dpg.add_image("texture_tag", pos=(0, 0))
         with dpg.group(horizontal=True):
             dpg.add_button(label="Настройки", callback=lambda: dpg.configure_item("settings_id", show=True))
             dpg.add_button(label="Помощь", callback=lambda: dpg.configure_item("modal_id", show=True))
@@ -341,7 +346,6 @@ if __name__ == "__main__":
                 dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 5, category=dpg.mvThemeCat_Core)
         dpg.bind_theme(main_theme)
 
-    dpg.show_metrics()
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
