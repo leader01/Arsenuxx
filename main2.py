@@ -1,12 +1,11 @@
 import speech_recognition
-import wave
-import json
 import os
 import pyttsx3
 from googletrans import Translator
 import wikipedia
 import ast
 import dearpygui.dearpygui as dpg
+
 
 class VoiceAssistant:
     """
@@ -41,7 +40,7 @@ def play_voice_assistant_speech(text_to_speech):
     :param text_to_speech: text, which we need convert to voice
     by Arsen
     """
-    dpg.set_value("txt2", "Мой ответ: " + text_to_speech)
+    dpg.set_value("txt2", text_to_speech)
     ttsEngine.say(str(text_to_speech))
     ttsEngine.runAndWait()
 
@@ -58,7 +57,7 @@ def record_and_recognize_audio(*args: tuple):
 
         try:
             print("Listening...")
-            dpg.set_value("stat", "Статус: Слушаю...")
+            dpg.set_value("stat", "Слушаю...")
             audio = recognizer.listen(microphone, 5, 5)
 
             with open("microphone-results.wav", "wb") as file:
@@ -66,8 +65,8 @@ def record_and_recognize_audio(*args: tuple):
 
         except speech_recognition.WaitTimeoutError:
             print("Can you check if your mic is on?")
-            dpg.set_value("stat", "Статус: Ошибка, звук не распознан")
-            dpg.set_value("txt2", "Мой ответ: Можете ли вы проверить включен ли ваш микрофон?")
+            dpg.set_value("stat", "Ошибка, звук не распознан")
+            dpg.set_value("txt2", "Можете ли вы проверить включен ли ваш микрофон?")
             return
 
         # using online recognition by Google
@@ -84,6 +83,7 @@ def record_and_recognize_audio(*args: tuple):
             print("Trying to use offline recognition...")
 
         return recognized_data
+
 
 def execute_command_with_name(command_name: str, *args: list):
     """
@@ -143,13 +143,13 @@ def play_farewell_and_quit(*args):
     else:
         play_voice_assistant_speech("Bye bye")
 
+
 def search_for_definition_on_wikipedia(arg: str):
     try:
         result = wikipedia.summary(arg, sentences=2)
         play_voice_assistant_speech(result)
     except:
-        dpg.set_value("stat", "Статус: Ошибка[x1wiki]")
-
+        dpg.set_value("stat", "Ошибка[x1-wiki]")
 
 
 def change_language(arg: str):
@@ -192,9 +192,12 @@ if __name__ == "__main__":
     # google translator initialization
     translator = Translator()
 
+
     def callback():
+        dpg.set_item_pos("ind1", (0,0))
         main_loop()
-        dpg.set_value("stat", "Статус: ...")
+        dpg.set_value("stat", "...")
+
 
     def callback2():
         value = dpg.get_value("input_text")
@@ -208,7 +211,21 @@ if __name__ == "__main__":
         elif "lang=en" in lang:
             destination = "ru"
         result = translator.translate(value, dest=destination)
-        dpg.set_value("txt0", "Результат: " + result.text)
+
+        wiki_result = None
+        try:
+            wiki_result = wikipedia.summary(value, sentences=2)
+        except:
+            wiki_result = "Не найдено"
+        wiki_result = wiki_result.replace("—", "это")
+        wiki_result = wiki_result.replace("е́", "e")
+        print(wiki_result)
+
+        dpg.set_value("txt0", "Результат перевода: " + result.text + "\n \n Возможное определение: " + wiki_result)
+
+
+
+
 
     def main_loop():
         dpg.set_item_label("btn1", "Обработка...")
@@ -218,10 +235,11 @@ if __name__ == "__main__":
         if os.path.exists("microphone-results.wav"):
             os.remove("microphone-results.wav")
 
-
         print(voice_input)
+        if voice_input == None:
+            voice_input = "..."
         try:
-            dpg.set_value("txt1", "Вы сказали:" + voice_input)
+            dpg.set_value("txt1", voice_input)
         except:
             pass
 
@@ -233,6 +251,7 @@ if __name__ == "__main__":
             execute_command_with_name(command, command_options)
         dpg.set_item_label("btn1", "Нажмите чтоб говорить")
 
+
     def reset():
         assistant.name = "Alice"
         assistant.sex = "female"
@@ -243,6 +262,7 @@ if __name__ == "__main__":
             play_voice_assistant_speech("Настройки ассистента были успешно сброшены")
         elif assistant.speech_language == "en":
             play_voice_assistant_speech("Settings of assistant was successfully reset")
+
 
     def change_language_call():
         if assistant.speech_language == "ru":
@@ -256,15 +276,17 @@ if __name__ == "__main__":
             setup_assistant_voice()
             play_voice_assistant_speech("Язык был успешно изменён")
 
+
     # // Basic user interface //
     dpg.create_context()
 
-    dpg.create_viewport(title='Arsenux', width=600, height=200)
+    dpg.create_viewport(title='Arsenux', width=1920, height=1080)
 
     with dpg.font_registry():
-            with dpg.font(r"fonts/cyrillic.ttf", 20, default_font=True, id="Default font"):
-                dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-    dpg.bind_font("Default font")
+        with dpg.font(r"fonts/cyrillic.ttf", 20, default_font=True, id="Default font"):
+            dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+        with dpg.font(r"fonts/timesetx-rus.ttf", 20, default_font=False, id="Second font"):
+            dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
     with dpg.window(label="Settings", modal=True, show=False, id="settings_id", no_title_bar=True):
         dpg.add_separator()
@@ -285,17 +307,39 @@ if __name__ == "__main__":
             dpg.add_button(label="Помощь", callback=lambda: dpg.configure_item("modal_id", show=True))
 
         dpg.add_separator()
-        dpg.add_text("Голосовое распознование")
+        dpg.add_text("Голосовое распознование", color = (0, 255, 255))
         dpg.add_separator()
-        dpg.add_button(label="Нажмите чтоб говорить", callback=callback, tag="btn1")
-        dpg.add_input_text(label="Введите слово или предложение для перевода", tag="input_text", callback=callback2, on_enter=True)
-        dpg.add_text(tag="txt0")
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Нажмите чтоб говорить", callback=callback, tag="btn1")
+            dpg.add_loading_indicator(circle_count=8, tag="ind1", pos=(-244,-244), thickness=10, color = (0, 255, 255))
+
+        with dpg.group(horizontal=True):
+            in_text1 = dpg.add_input_text(tag="input_text", callback=callback2, on_enter=True)
+            dpg.add_text("Введите слово или предложение для перевода", color = (32, 178, 170))
+        dpg.add_text(tag="txt0", color = (0, 255, 0))
         dpg.add_separator()
-        dpg.add_text("/// Информация отладки ")
-        dpg.add_text("Статус:", tag="stat")
-        dpg.add_text("Вы сказали:", tag="txt1")
-        dpg.add_text("Мой ответ:", tag="txt2")
+
+        dpg.add_text("/// Информация отладки ", color = (0, 206, 209))
+        with dpg.group(horizontal=True):
+            dpg.add_text("Статус: ", color=(32, 168, 170))
+            dpg.add_text("", tag="stat")
+        with dpg.group(horizontal=True):
+            dpg.add_text("Вы сказали: ", color=(0, 139, 139))
+            dpg.add_text("", tag="txt1")
+        with dpg.group(horizontal=True):
+            dpg.add_text("Мой ответ: ", color=(0, 128, 128))
+            dpg.add_text("", tag="txt2")
         dpg.add_separator()
+
+        # set font of specific widget
+        dpg.bind_font("Default font")
+        dpg.bind_item_font(in_text1, "Second font")
+
+        # themes
+        with dpg.theme() as main_theme:
+            with dpg.theme_component(dpg.mvInputText):
+                dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 5, category=dpg.mvThemeCat_Core)
+        dpg.bind_theme(main_theme)
 
     dpg.show_metrics()
     dpg.setup_dearpygui()
